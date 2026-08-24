@@ -17,7 +17,7 @@ public class TowerInfo {
 
         String pid;
         String description;
-        char shortcut = '`';
+        char shortcut;
         String title1;
         String title2;
         int price;
@@ -29,7 +29,7 @@ public class TowerInfo {
             title2 = (String) turretClass.getField("title2").get(null);
             price = (int) turretClass.getField("price").get(null);
         } catch (NoSuchFieldException | IllegalAccessException ex) {
-            System.out.println("Something bad happened in TurretInfo: " + ex);
+            System.err.println("Something bad happened in TurretInfo: " + ex);
             return;
         }
         if (pid == null || description == null || shortcut == '`' || title1 == null || price == 0) {

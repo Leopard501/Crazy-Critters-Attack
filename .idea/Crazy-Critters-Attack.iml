@@ -9,17 +9,8 @@
     </content>
     <orderEntry type="jdk" jdkName="17 (3)" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
-      <library>
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/../../Processing/libraries/sound/library" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../../Processing/libraries/sound/library" recursive="false" />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="library" level="project" />
     <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
+    <orderEntry type="library" name="sound" level="project" />
   </component>
 </module>
