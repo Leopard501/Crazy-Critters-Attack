@@ -53,6 +53,18 @@ public class DarkBlast extends Projectile {
         shockwaves.add(new DarkShockwave(p, position.x, position.y, 0,
                 effectRadius, turret));
     }
+
+    @Override
+    protected void damageEnemy(Enemy enemy, PVector applyVelocity) {
+        enemy.damageVortex(damage,
+                buff, effectLevel, effectDuration, turret, type, applyVelocity, position, effectRadius);
+    }
+
+    @Override
+    protected void splashDamageEnemy(Enemy enemy, PVector applyVelocity) {
+        enemy.damageVortex(3 * (damage / 4),
+                buff, effectLevel, effectDuration, turret, type, applyVelocity.mult(-1), position, effectRadius);
+    }
 }
 
 

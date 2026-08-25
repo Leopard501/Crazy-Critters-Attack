@@ -8,11 +8,11 @@ import main.buffs.stunned.Frozen;
 import main.buffs.stunned.Stunned;
 import main.gui.guiObjects.PopupText;
 import main.misc.Corpse;
+import main.misc.GoreVortex;
 import main.misc.Tile;
 import main.particles.Floaty;
 import main.particles.MiscParticle;
 import main.particles.Ouch;
-import main.particles.Pile;
 import main.pathfinding.Node;
 import main.pathfinding.PathRequest;
 import main.sound.MoveSoundLoop;
@@ -132,6 +132,8 @@ public class Enemy {
     protected PVector partsDirection;
     protected PVector corpseSize;
     protected PVector partSize;
+    protected PVector dmgSourcePosition;
+    protected float dmgSourceRadius;
     protected PImage[] moveFrames;
     protected PImage sprite;
     protected Color currentTintColor;
@@ -296,20 +298,26 @@ public class Enemy {
     protected void goreyDeathEffect(DamageType type) {
         if (overkill) {
             for (int j = 0; j < animatedSprites.get(name + "PartsEN").length; j++) {
-                float maxRotationSpeed = up60ToFramerate(200f / partSize.x);
-                corpses.add(new Corpse(p, position, partSize, rotation, adjustPartVelocityToFramerate(partsDirection),
-                  currentTintColor ,p.random(radians(-maxRotationSpeed), radians(maxRotationSpeed)),
-                  0, corpseLifespan, type, name + "Parts", hitParticle, j, false));
+                if (dmgSourcePosition != null) {
+                    corpses.add(new GoreVortex(p, position, partSize, rotation,
+                            adjustPartVelocityToFramerate(partsDirection),
+                            currentTintColor,
+                            corpseLifespan, j, type, name + "Parts", hitParticle,
+                            dmgSourcePosition, dmgSourceRadius));
+                } else {
+                    corpses.add(new Corpse(p, position, partSize, rotation,
+                            adjustPartVelocityToFramerate(partsDirection),
+                            currentTintColor,
+                            0, corpseLifespan, type, name + "Parts", hitParticle, j, false));
+                }
             }
             for (int k = 0; k < sq(pfSize); k++) {
-                bottomParticles.add(new Pile(p, (float) (position.x + 2.5 + p.random((size.x / 2) * -1,
-                  (size.x / 2))), (float) (position.y + 2.5 + p.random((size.x / 2) * -1, (size.x / 2))),
-                  0, hitParticle.name()));
+                Corpse.bloodSplatter(p, position, size, hitParticle);
             }
         } else
             corpses.add(new Corpse(p, position, corpseSize,
               rotation + p.random(radians(-5), radians(5)), new PVector(0, 0),
-              currentTintColor, 0, corpseDelay, corpseLifespan, type, name + "Die",
+              currentTintColor, corpseDelay, corpseLifespan, type, name + "Die",
               hitParticle, 0, true));
     }
 
@@ -426,6 +434,14 @@ public class Enemy {
             p.rect(pfPosition.x - 12.5f, pfPosition.y - 12.5f, pfSize * 25, pfSize * 25);
         }
         for (Buff buff : buffs) buff.display();
+    }
+
+    public void damageVortex(int damage, String buffName, float effectLevel, float effectDuration, Turret turret,
+                             DamageType damageType, PVector direction, PVector sourcePos, float sourceRadius) {
+        dmgSourcePosition = sourcePos;
+        dmgSourceRadius = sourceRadius;
+
+        damageWithBuff(damage, buffName, effectLevel, effectDuration, turret, true, damageType, direction);
     }
 
     /**

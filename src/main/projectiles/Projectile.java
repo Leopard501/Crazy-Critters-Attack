@@ -152,7 +152,7 @@ public abstract class Projectile {
                 playSoundRandomSpeed(p, hitSound, 1);
                 PVector applyVelocity = velocity;
                 if (effectRadius > 0) applyVelocity = new PVector(0, 0);
-                enemy.damageWithBuff(damage, buff, effectLevel, effectDuration, turret, causeEnemyParticles, type, applyVelocity);
+                damageEnemy(enemy, applyVelocity);
                 hitEnemies.add(enemy);
                 pierce--;
                 //splash
@@ -162,13 +162,22 @@ public abstract class Projectile {
                     if (nearEnemy(splashEnemy)) {
                         applyVelocity = fromExplosionCenter(splashEnemy);
                         if (intersectingEnemy(splashEnemy)) applyVelocity = new PVector(0, 0);
-                        splashEnemy.damageWithBuff(3 * (damage / 4), buff, effectLevel, effectDuration, turret,
-                                causeEnemyParticles, type, applyVelocity);
+                        splashDamageEnemy(splashEnemy, applyVelocity);
                     }
                 }
             }
             if (pierce < 0) dead = true;
         }
+    }
+
+    protected void damageEnemy(Enemy enemy, PVector applyVelocity) {
+        enemy.damageWithBuff(damage,
+                buff, effectLevel, effectDuration, turret, causeEnemyParticles, type, applyVelocity);
+    }
+
+    protected void splashDamageEnemy(Enemy enemy, PVector applyVelocity) {
+        enemy.damageWithBuff(3 * (damage / 4),
+                buff, effectLevel, effectDuration, turret, causeEnemyParticles, type, applyVelocity);
     }
 
     protected PVector fromExplosionCenter(Enemy enemy) {
