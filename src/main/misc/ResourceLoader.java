@@ -3,7 +3,9 @@ package main.misc;
 import main.Main;
 import main.sound.FadeSoundLoop;
 import main.sound.MoveSoundLoop;
+import main.sound.SoundWithAlts;
 import main.sound.StartStopSoundLoop;
+import org.jetbrains.annotations.NotNull;
 import processing.core.PApplet;
 import processing.core.PImage;
 import processing.sound.SoundFile;
@@ -230,6 +232,8 @@ public class ResourceLoader {
         moveSoundLoops.put("slimeMovement", new MoveSoundLoop(p, "slimeMovement", 5));
         moveSoundLoops.put("rattle", new MoveSoundLoop(p, "rattle", 5));
         moveSoundLoops.put("fae", new MoveSoundLoop(p, "fae", 10));
+
+        soundsWithAlts.put("thunder", new SoundWithAlts(p, "thunder", 3));
     }
 
     /**
@@ -260,8 +264,9 @@ public class ResourceLoader {
             }
         }
 
+        @NotNull
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+        public FileVisitResult visitFile(Path file, @NotNull BasicFileAttributes attrs) {
             if (!file.toString().endsWith(extension)) return FileVisitResult.CONTINUE;
 
             String path = ROOT_PATH.relativize(file).toString();
