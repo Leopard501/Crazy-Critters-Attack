@@ -81,31 +81,31 @@ public class Nightmare extends Turret {
     protected void setUpgrades(){
         //price
         upgradePrices[0] = 5000;
-        upgradePrices[1] = 7500;
+        upgradePrices[4] = 7500;
         upgradePrices[2] = 100000;
 
         upgradePrices[3] = 6000;
-        upgradePrices[4] = 10000;
+        upgradePrices[1] = 10000;
         upgradePrices[5] = 100000;
         //titles
         upgradeTitles[0] = "Firerate";
-        upgradeTitles[1] = "More Needles";
-        upgradeTitles[2] = "Dark Cloud";
+        upgradeTitles[1] = "Effect Power";
+        upgradeTitles[2] = "Dark Wind";
 
         upgradeTitles[3] = "Range";
-        upgradeTitles[4] = "Effect Power";
-        upgradeTitles[5] = "Impalement";
+        upgradeTitles[4] = "More Needles";
+        upgradeTitles[5] = "Prismatic";
         //descriptions
         upgradeDescA[0] = "Increase";
         upgradeDescB[0] = "firerate";
         upgradeDescC[0] = "";
 
-        upgradeDescA[1] = "Fire more";
-        upgradeDescB[1] = "projectiles";
-        upgradeDescC[1] = "";
+        upgradeDescA[1] = "Increase";
+        upgradeDescB[1] = "damage &";
+        upgradeDescC[1] = "duration";
 
-        upgradeDescA[2] = "whoosh";
-        upgradeDescB[2] = "";
+        upgradeDescA[2] = "A dark";
+        upgradeDescB[2] = "wind blows";
         upgradeDescC[2] = "";
 
 
@@ -113,20 +113,20 @@ public class Nightmare extends Turret {
         upgradeDescB[3] = "range";
         upgradeDescC[3] = "";
 
-        upgradeDescA[4] = "Increase";
-        upgradeDescB[4] = "damage &";
-        upgradeDescC[4] = "duration";
+        upgradeDescA[4] = "Fire more";
+        upgradeDescB[4] = "projectiles";
+        upgradeDescC[4] = "";
 
-        upgradeDescA[5] = "owie";
-        upgradeDescB[5] = "";
-        upgradeDescC[5] = "";
+        upgradeDescA[5] = "A hail of";
+        upgradeDescB[5] = "crystallized";
+        upgradeDescC[5] = "light";
         //icons
         upgradeIcons[0] = animatedSprites.get("upgradeIC")[7];
-        upgradeIcons[1] = animatedSprites.get("upgradeIC")[4];
+        upgradeIcons[1] = animatedSprites.get("upgradeIC")[3];
         upgradeIcons[2] = animatedSprites.get("upgradeIC")[4];
 
         upgradeIcons[3] = animatedSprites.get("upgradeIC")[5];
-        upgradeIcons[4] = animatedSprites.get("upgradeIC")[3];
+        upgradeIcons[4] = animatedSprites.get("upgradeIC")[4];
         upgradeIcons[5] = animatedSprites.get("upgradeIC")[3];
     }
 
@@ -135,16 +135,16 @@ public class Nightmare extends Turret {
         if (id == 0) {
             switch (nextLevelA) {
                 case 0 -> delay -= 1;
-                case 1 -> numProjectiles += 3;
+                case 1 -> {
+                    effectDuration += 3;
+                    effectLevel += 1000;
+                }
                 case 2 -> numProjectiles += 10;
             }
         } if (id == 1) {
             switch (nextLevelB) {
                 case 3 -> range += 40;
-                case 4 -> {
-                    effectDuration += 3;
-                    effectLevel += 1000;
-                }
+                case 4 -> numProjectiles += 3;
                 case 5 -> {
                     effectDuration += 5;
                     effectLevel += 1100;
