@@ -1,5 +1,7 @@
 package main.towers.turrets;
 
+import main.enemies.Enemy;
+import main.particles.Vortex;
 import main.projectiles.Needle;
 import main.misc.Tile;
 import main.particles.MiscParticle;
@@ -12,6 +14,7 @@ import static main.sound.SoundUtilities.playSoundRandomSpeed;
 public class Nightmare extends Turret {
 
     private int numProjectiles;
+    private boolean isWindy;
 
     public static String pid = "T2-200-0-3.5";
     public static String description =
@@ -51,16 +54,55 @@ public class Nightmare extends Turret {
     }
 
     @Override
+    public void update() {
+        if (hp <= 0) {
+            die(false);
+            tile.tower = null;
+        }
+        updateBoosts();
+        if (!isWindy) {
+            if (!enemies.isEmpty() && !machine.dead && !isPaused) checkTarget();
+        } else {
+            if (!isPaused) fire(0, "decay");
+        }
+        if (p.mousePressed && boardMousePosition.x < tile.position.x
+                && boardMousePosition.x > tile.position.x - size.x && boardMousePosition.y < tile.position.y
+                && boardMousePosition.y > tile.position.y - size.y && alive && !isPaused) {
+            selection.swapSelected(tile.id);
+        }
+    }
+
+    @Override
     protected void fire(float barrelLength, String particleType) {
-        float angleDelta = PApplet.radians(10);
-        playSoundRandomSpeed(p, fireSound, 1);
-        for (int i = 0; i < numProjectiles; i++) {
-            int num = ceil(i - numProjectiles / 2f);
-            PVector spp = new PVector(tile.position.x-size.x/2,tile.position.y-size.y/2);
-            PVector spa = PVector.fromAngle(angle-HALF_PI);
-            spa.setMag(20);
-            spp.add(spa);
-            spawnProjectiles(spp, angle + num * angleDelta);
+        PVector pos = new PVector(tile.position.x-size.x/2,tile.position.y-size.y/2);
+        if (!isWindy) {
+            float angleDelta = PApplet.radians(10);
+            playSoundRandomSpeed(p, fireSound, 1);
+            for (int i = 0; i < numProjectiles; i++) {
+                int num = ceil(i - numProjectiles / 2f);
+                PVector spa = PVector.fromAngle(angle-HALF_PI);
+                spa.setMag(20);
+                pos.add(spa);
+                spawnProjectiles(pos, angle + num * angleDelta);
+            }
+        } else {
+            for (Enemy enemy : enemies) {
+                if (PVector.sub(pos, enemy.position).mag() < range) {
+                    enemy.damageVortex(0, "decay", effectLevel, effectDuration, this,
+                            Enemy.DamageType.decay, pos, pos, range, -0.5f);
+                }
+            }
+            for (int j = 0; j < 3; j++) {
+                PVector partpos = PVector.add(pos, PVector.fromAngle(p.random(TWO_PI)).setMag(p.random(range)));
+                towerParticles.add(new MiscParticle(p, partpos.x, partpos.y, p.random(TWO_PI), "decay"));
+            }
+            int numRings = range / 5;
+            for (int i = 0; i < numRings; i++) {
+                for (int j = 0; j < p.random(1, 3); j++) {
+                    float apsis = (range / (float) numRings) * i;
+                    topParticles.add(new Vortex(p, new PVector(pos.x, pos.y), apsis, p.random(TWO_PI)));
+                }
+            }
         }
     }
 
@@ -139,7 +181,11 @@ public class Nightmare extends Turret {
                     effectDuration += 3;
                     effectLevel += 1000;
                 }
-                case 2 -> numProjectiles += 10;
+                case 2 -> {
+                    effectLevel += 1000;
+                    isWindy = true;
+                    range -= 30;
+                }
             }
         } if (id == 1) {
             switch (nextLevelB) {

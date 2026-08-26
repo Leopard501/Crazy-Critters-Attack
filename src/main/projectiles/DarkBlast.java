@@ -57,13 +57,13 @@ public class DarkBlast extends Projectile {
     @Override
     protected void damageEnemy(Enemy enemy, PVector applyVelocity) {
         enemy.damageVortex(damage,
-                buff, effectLevel, effectDuration, turret, type, applyVelocity, position, effectRadius);
+                buff, effectLevel, effectDuration, turret, type, applyVelocity, position, effectRadius, 1);
     }
 
     @Override
     protected void splashDamageEnemy(Enemy enemy, PVector applyVelocity) {
         enemy.damageVortex(3 * (damage / 4),
-                buff, effectLevel, effectDuration, turret, type, applyVelocity.mult(-1), position, effectRadius);
+                buff, effectLevel, effectDuration, turret, type, applyVelocity.mult(-1), position, effectRadius, 1);
     }
 }
 

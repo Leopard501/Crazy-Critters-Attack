@@ -127,13 +127,14 @@ public class Enemy {
     protected int moveFrame;
     protected int idleTime;
     protected float targetAngle;
+    protected float dmgSourceRadius;
+    protected float dmgAttractiveMag;
     protected boolean overkill;
     protected PApplet p;
     protected PVector partsDirection;
     protected PVector corpseSize;
     protected PVector partSize;
     protected PVector dmgSourcePosition;
-    protected float dmgSourceRadius;
     protected PImage[] moveFrames;
     protected PImage sprite;
     protected Color currentTintColor;
@@ -303,7 +304,7 @@ public class Enemy {
                             adjustPartVelocityToFramerate(partsDirection),
                             currentTintColor,
                             corpseLifespan, j, type, name + "Parts", hitParticle,
-                            dmgSourcePosition, dmgSourceRadius));
+                            dmgSourcePosition, dmgSourceRadius, dmgAttractiveMag));
                 } else {
                     corpses.add(new Corpse(p, position, partSize, rotation,
                             adjustPartVelocityToFramerate(partsDirection),
@@ -437,9 +438,11 @@ public class Enemy {
     }
 
     public void damageVortex(int damage, String buffName, float effectLevel, float effectDuration, Turret turret,
-                             DamageType damageType, PVector direction, PVector sourcePos, float sourceRadius) {
+                             DamageType damageType, PVector direction, PVector sourcePos, float sourceRadius,
+                             float attractiveMag) {
         dmgSourcePosition = sourcePos;
         dmgSourceRadius = sourceRadius;
+        dmgAttractiveMag = attractiveMag;
 
         damageWithBuff(damage, buffName, effectLevel, effectDuration, turret, true, damageType, direction);
     }

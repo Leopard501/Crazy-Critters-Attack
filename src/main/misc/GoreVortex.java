@@ -11,6 +11,7 @@ public class GoreVortex extends Corpse {
 
     private final PVector vortexCenter;
     private final float vortexRadius;
+    private final float attractiveMag;
 
     /**
      * A gore fragment that orbits around a vortex
@@ -25,13 +26,14 @@ public class GoreVortex extends Corpse {
      * @param bloodParticle    what color the blood should be
      */
     public GoreVortex(PApplet p, PVector position, PVector size, float angle, PVector velocity, Color currentTintColor,
-                      int maxLife, int frame, Enemy.DamageType type,
-                      String name, Enemy.HitParticle bloodParticle, PVector vortexCenter, float vortexRadius) {
+                      int maxLife, int frame, Enemy.DamageType type, String name,
+                      Enemy.HitParticle bloodParticle, PVector vortexCenter, float vortexRadius, float attractiveMag) {
         super(p, position, size, angle, velocity, currentTintColor, 0, maxLife,
                 type, name, bloodParticle, frame, false);
 
         this.vortexCenter = vortexCenter;
         this.vortexRadius = vortexRadius;
+        this.attractiveMag = attractiveMag;
     }
 
     @Override
@@ -46,7 +48,7 @@ public class GoreVortex extends Corpse {
                 Math.pow(position.x - vortexCenter.x, 2) +
                         Math.pow(position.y - vortexCenter.y, 2));
         float mag = (float) (Math.max(1 - dist / vortexRadius, 0) * 10 * Math.pow((float) lifespan / maxLife, 5));
-        PVector attractiveVelocity = PVector.sub(vortexCenter, position).setMag(mag);
+        PVector attractiveVelocity = PVector.sub(vortexCenter, position).setMag(mag * attractiveMag);
         PVector orbitVelocity = PVector.fromAngle(Utilities.findAngle(attractiveVelocity) + PConstants.QUARTER_PI)
                 .setMag(mag);
 
