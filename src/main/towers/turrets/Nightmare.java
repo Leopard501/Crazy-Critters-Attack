@@ -9,10 +9,14 @@ import main.particles.MiscParticle;
 import processing.core.PApplet;
 import processing.core.PVector;
 
+import java.awt.*;
+
 import static main.Main.*;
 import static main.sound.SoundUtilities.playSoundRandomSpeed;
 
 public class Nightmare extends Turret {
+
+    private static final Color SPECIAL_COLOR = new Color(0x910000);
 
     private int numProjectiles;
     private boolean isWindy;
@@ -43,15 +47,17 @@ public class Nightmare extends Turret {
         priority = Priority.Unbuffed;
         effect = "decay";
         titleLines = new String[]{"Nightmare", "Blaster"};
-//        infoDisplay = (o) -> {
-//            selection.setTextPurple("Decay", o);
-//            selection.setTextPurple(numProjectiles + " needles", o);
-//        };
-
         placeSound = sounds.get("titaniumPlace");
         breakSound = sounds.get("titaniumBreak");
         damageSound = sounds.get("titaniumDamage");
         fireSound = sounds.get("nightmareFire");
+        extraInfo.add((arg) -> selection.displayInfoLine(
+                arg, SPECIAL_COLOR, "Needles", numProjectiles + ""));
+        extraInfo.add((arg) -> selection.displayInfoLine(arg, SPECIAL_COLOR, "Decay:", null));
+        extraInfo.add((arg) -> selection.displayInfoLine(
+                arg, SPECIAL_COLOR, "DPS", ((int) (effectLevel / 0.2f)) + ""));
+        extraInfo.add((arg) -> selection.displayInfoLine(
+                arg, SPECIAL_COLOR, "Duration", nf(effectDuration, 1, 1) + "s"));
     }
 
     @Override
@@ -182,6 +188,8 @@ public class Nightmare extends Turret {
                     effectLevel += 1000;
                     isWindy = true;
                     range -= 50;
+                    extraInfo.remove(0);
+                    delay = 0;
                 }
             }
         } if (id == 1) {
