@@ -1,7 +1,8 @@
 package main.towers.turrets;
 
 import main.enemies.Enemy;
-import main.particles.Vortex;
+import main.particles.NightmareVortex;
+import main.particles.Ouch;
 import main.projectiles.Needle;
 import main.misc.Tile;
 import main.particles.MiscParticle;
@@ -94,14 +95,10 @@ public class Nightmare extends Turret {
             }
             for (int j = 0; j < 3; j++) {
                 PVector partpos = PVector.add(pos, PVector.fromAngle(p.random(TWO_PI)).setMag(p.random(range)));
-                towerParticles.add(new MiscParticle(p, partpos.x, partpos.y, p.random(TWO_PI), "decay"));
+                towerParticles.add(new Ouch(p, partpos.x, partpos.y, p.random(TWO_PI), "greyPuff"));
             }
-            int numRings = range / 5;
-            for (int i = 0; i < numRings; i++) {
-                for (int j = 0; j < p.random(1, 3); j++) {
-                    float apsis = (range / (float) numRings) * i;
-                    topParticles.add(new Vortex(p, new PVector(pos.x, pos.y), apsis, p.random(TWO_PI)));
-                }
+            for (int i = 0; i < p.random(2, 5); i++) {
+                topParticles.add(new NightmareVortex(p, pos.copy(), range));
             }
         }
     }
@@ -184,7 +181,7 @@ public class Nightmare extends Turret {
                 case 2 -> {
                     effectLevel += 1000;
                     isWindy = true;
-                    range -= 30;
+                    range -= 50;
                 }
             }
         } if (id == 1) {

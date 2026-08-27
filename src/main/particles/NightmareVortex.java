@@ -8,27 +8,28 @@ import processing.core.PVector;
 import static main.Main.animatedSprites;
 import static main.misc.ResourceLoader.getResource;
 import static main.misc.Utilities.randomizeBy;
-import static processing.core.PConstants.*;
+import static processing.core.PConstants.PI;
+import static processing.core.PConstants.TWO_PI;
 
-public class Vortex extends Particle {
+public class NightmareVortex extends Particle {
 
-    private final float apsis;
+    private final float end;
     private final float argument;
     private final int lifespan;
     private final PVector center;
 
     private int age = 0;
 
-    public Vortex(PApplet p, PVector center, float apsis) {
+    public NightmareVortex(PApplet p, PVector center, float end) {
         super(p, center.x, center.y, p.random(TWO_PI));
         size = new PVector(9, 9);
 
-        this.apsis = apsis;
+        this.end = end;
         this.center = center;
         argument = p.random(TWO_PI);
-        lifespan = Math.max((int) randomizeBy(p, apsis / 2, 0.2f), 1);
+        lifespan = Math.max((int) randomizeBy(p, this.end / 2, 0.2f), 1);
 
-        PImage[] anim = getResource("darkExDebrisPT", animatedSprites);
+        PImage[] anim = getResource("decayMiscPT", animatedSprites);
 
         animation = new Animator(
                 anim,
@@ -42,9 +43,9 @@ public class Vortex extends Particle {
         if (animation.ended()) dead = true;
 
         position = new PVector(
-                (float) Math.cos(((double) age / lifespan + argument) * PI),
-                (float) Math.sin(((double) age / lifespan + argument) * PI)
-        ).mult((1 - ((float) age / lifespan)) * apsis)
+                (float) Math.cos(((double) age / lifespan + argument) * TWO_PI),
+                (float) Math.sin(((double) age / lifespan + argument) * TWO_PI)
+        ).mult(((float) age / lifespan) * end)
                 .add(center);
 
         displayAngle = ((float) age / lifespan + argument) * PI;

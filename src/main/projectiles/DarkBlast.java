@@ -46,7 +46,7 @@ public class DarkBlast extends Projectile {
         for (int i = 0; i < numRings; i++) {
             for (int j = 0; j < p.random(10, 16); j++) {
                 float apsis = (effectRadius / (float) numRings) * i;
-                topParticles.add(new Vortex(p, new PVector(position.x, position.y), apsis, p.random(TWO_PI)));
+                topParticles.add(new Vortex(p, new PVector(position.x, position.y), apsis));
             }
         }
         projectiles.remove(this);
