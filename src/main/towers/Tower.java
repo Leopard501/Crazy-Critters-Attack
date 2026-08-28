@@ -1,7 +1,6 @@
 package main.towers;
 
-import main.projectiles.arcs.OrangeArc;
-import main.projectiles.arcs.RedArc;
+import main.projectiles.arcs.Arc;
 import main.projectiles.Flame;
 import main.projectiles.shockwaves.FireShockwave;
 import main.projectiles.shockwaves.NuclearShockwave;
@@ -190,12 +189,20 @@ public abstract class Tower {
         if (radius > 300) arcCount = 8;
         if (radius > 600) arcCount = 16;
         for (int i = 0; i < arcCount; i++) {
-            arcs.add(new OrangeArc(p, x, y, null, getValue() / 8, radius / 10, radius * 2,
-              Turret.Priority.None, 50));
+            arcs.add(Arc.presets(
+                    "boosterOrange",
+                    p, new PVector(x, y), null,
+                    getValue() / 8, radius / 10, radius * 2,
+                    Turret.Priority.values()[(int) p.random(3)]
+            ));
         }
         for (int i = 0; i < arcCount / 3; i++) {
-            arcs.add(new RedArc(p, x, y, null, getValue() / 8, radius / 10, radius * 2,
-              Turret.Priority.None));
+            arcs.add(Arc.presets(
+                    "boosterRed",
+                    p, new PVector(x, y), null,
+                    getValue() / 8, radius / 10, radius * 2,
+                    Turret.Priority.values()[(int) p.random(3)]
+            ));
         }
         if (radius > 200) playSoundRandomSpeed(p, sounds.get("hugeExplosion"), 1);
         else playSoundRandomSpeed(p, sounds.get("smallExplosion"), 1);

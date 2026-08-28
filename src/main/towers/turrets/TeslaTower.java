@@ -1,8 +1,8 @@
 package main.towers.turrets;
 
+import main.enemies.Enemy;
 import main.misc.Tile;
 import main.projectiles.arcs.Arc;
-import main.projectiles.arcs.DemonArc;
 import main.projectiles.shockwaves.LightningShockwave;
 import main.sound.FadeSoundLoop;
 import main.sound.SoundWithAlts;
@@ -76,18 +76,37 @@ public class TeslaTower extends Turret {
             shockwaves.add(new LightningShockwave(p, targetPosition.x, targetPosition.y, 150, damage, this));
             //damaging arcs
             for (int i = 0; i < 3; i++) {
-                arcs.add(new Arc(p, targetPosition.x, targetPosition.y, this, getDamage() / 2, arcLength, 600, Priority.values()[i], targetEnemy));
+                arcs.add(new Arc(
+                        p, targetPosition.copy(), this,
+                        getDamage() / 2, arcLength, 600, 200,
+                        Priority.values()[i],
+                        25, 10, 10, 1, 1, 16,
+                        new Color(215, 242, 248), Enemy.DamageType.electricity,
+                        targetEnemy
+                ));
             } //decorative arcs
             for (int i = 0; i < p.random(5, 10); i++) {
-                arcs.add(new Arc(p, targetPosition.x, targetPosition.y, this, 0, arcLength, 200, Priority.None));
+                arcs.add(Arc.presets(
+                        "tesla",
+                        p, targetPosition.copy(), this,
+                        0, arcLength, 200, Priority.None
+                ));
             } //decorative self arcs
             for (int i = 0; i < 3; i++) {
-                arcs.add(new Arc(p, myPosition.x, myPosition.y, this, 0, arcLength, 100, Priority.None));
+                arcs.add(Arc.presets(
+                        "tesla",
+                        p, myPosition.copy(), this,
+                        0, arcLength, 100, Priority.None
+                ));
             }
         } else if (!highPower) {
             playSoundRandomSpeed(p, fireSound, 1);
             PVector position = new PVector(tile.position.x - 25, tile.position.y - 25);
-            arcs.add(new Arc(p, position.x, position.y, this, getDamage(), arcLength, getRange(), priority));
+            arcs.add(Arc.presets(
+                    "tesla",
+                    p, position.copy(), this,
+                    getDamage(), arcLength, getRange(), priority
+            ));
         }
     }
 
@@ -100,14 +119,22 @@ public class TeslaTower extends Turret {
         updateBoosts();
         if (highPower && !isPaused && !machine.dead) {
             PVector position = new PVector(tile.position.x - 25, tile.position.y - 25);
-            arcs.add(new DemonArc(p, position.x, position.y, this, getDamage(), arcLength, getRange(), priority));
+            arcs.add(new Arc(
+                    p, position.copy(), this,
+                    getDamage(), arcLength, getRange(), getRange() / 10,
+                    priority,
+                    15, 30, 3, 3, 30, 200,
+                    new Color(0xE12E0E), Enemy.DamageType.energy
+            ));
             FadeSoundLoop electricity = fadeSoundLoops.get("electricity");
             if (electricity.targetVolume < 0.2f) electricity.setTargetVolume(0.2f);
         } else {
             if (!enemies.isEmpty() && !machine.dead && !isPaused) checkTarget();
         }
-        if (p.mousePressed && boardMousePosition.x < tile.position.x && boardMousePosition.x > tile.position.x - size.x && boardMousePosition.y < tile.position.y
-                && boardMousePosition.y > tile.position.y - size.y && alive && !isPaused) {
+        if (p.mousePressed && boardMousePosition.x < tile.position.x && boardMousePosition.x > tile.position.x - size.x
+                && boardMousePosition.y < tile.position.y
+                && boardMousePosition.y > tile.position.y - size.y
+                && alive && !isPaused) {
             selection.swapSelected(tile.id);
         }
     }

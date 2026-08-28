@@ -11,7 +11,6 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static main.Main.*;
-import static main.misc.Utilities.up60ToFramerate;
 
 public class Arc {
 
@@ -29,36 +28,124 @@ public class Arc {
     protected Color lineColor;
     protected Enemy.DamageType particleType;
     protected int maxPoints;
+    protected int maxPointsNoTarget;
+    protected int maxDistanceNoTarget;
     protected int variation;
     protected int weight;
     protected int particleChance;
+    protected int alphaDelta;
 
     public int alpha;
 
-    /** Used by Tesla Tower. */
-    public Arc(PApplet p, float startX, float startY, Turret turret, int damage, int maxLength, int maxDistance, Turret.Priority priority) {
-        this(p, startX, startY, turret, damage, maxLength, maxDistance, priority, null);
-    }
+    private boolean buffer = true;
 
-    /** Used by lightning caller. */
-    public Arc(PApplet p, float startX, float startY, Turret turret, int damage, int maxLength, int maxDistance,
-               Turret.Priority priority, Enemy blacklistedEnemy) {
+    /** General form */
+    public Arc(
+            PApplet p, PVector start, Turret turret,
+            int damage, int maxLength, int maxDistance, int maxDistanceNoTarget,
+            Turret.Priority priority,
+            int variation, int maxPoints, int maxPointsNoTarget, int weight, int particleChance, int alphaDelta,
+            Color lineColor, Enemy.DamageType particleType
+    ) {
         this.p = p;
-        startPosition = new PVector(startX, startY);
+        startPosition = start;
         this.turret = turret;
         this.damage = damage;
         this.maxLength = maxLength;
         this.maxDistance = maxDistance;
+        this.maxDistanceNoTarget = maxDistanceNoTarget;
         this.priority = priority;
         bigPoints = new ArrayList<>();
         alpha = 255;
-        variation = 25;
-        maxPoints = 10;
-        weight = 1;
-        particleChance = 1;
-        lineColor = new Color(215, 242, 248);
-        particleType = Enemy.DamageType.electricity;
+        this.variation = variation;
+        this.maxPoints = maxPoints;
+        this.maxPointsNoTarget = maxPointsNoTarget;
+        this.weight = weight;
+        this.particleChance = particleChance;
+        this.lineColor = lineColor;
+        this.particleType = particleType;
+        this.alphaDelta = alphaDelta;
+        blacklistedEnemy = null;
+    }
+
+    /** General form with blacklisted enemy */
+    public Arc(
+            PApplet p, PVector start, Turret turret,
+            int damage, int maxLength, int maxDistance, int maxDistanceNoTarget,
+            Turret.Priority priority,
+            int variation, int maxPoints, int maxPointsNoTarget, int weight, int particleChance, int alphaDelta,
+            Color lineColor, Enemy.DamageType particleType,
+            Enemy blacklistedEnemy
+    ) {
+        this.p = p;
+        startPosition = start;
+        this.turret = turret;
+        this.damage = damage;
+        this.maxLength = maxLength;
+        this.maxDistance = maxDistance;
+        this.maxDistanceNoTarget = maxDistanceNoTarget;
+        this.priority = priority;
+        bigPoints = new ArrayList<>();
+        alpha = 255;
+        this.variation = variation;
+        this.maxPoints = maxPoints;
+        this.maxPointsNoTarget = maxPointsNoTarget;
+        this.weight = weight;
+        this.particleChance = particleChance;
+        this.lineColor = lineColor;
+        this.particleType = particleType;
+        this.alphaDelta = alphaDelta;
         this.blacklistedEnemy = blacklistedEnemy;
+    }
+
+    public static Arc presets(
+            String preset,
+            PApplet p, PVector start, Turret turret,
+            int damage, int maxLength, int maxDistance,
+            Turret.Priority priority
+    ) {
+        switch (preset) {
+            case "tesla" -> {
+                return new Arc(
+                        p, start, turret,
+                        damage, maxLength, maxDistance, maxDistance,
+                        priority,
+                        25, 10, 10, 1, 1, 16,
+                        new Color(215, 242, 248), Enemy.DamageType.electricity
+                );
+            }
+            case "boosterRed" -> {
+                return new Arc(
+                        p, start, turret,
+                        damage, maxLength, maxDistance, maxDistance,
+                        priority,
+                        15, 5, 5, 3, 1, 16,
+                        Color.RED, Enemy.DamageType.energy
+                );
+            }
+            case "boosterOrange" -> {
+                return new Arc(
+                        p, start, turret,
+                        damage, maxLength, maxDistance, maxDistance,
+                        priority,
+                        15, 5, 5, 3, 1, 16,
+                        new Color(255, 117, 0), Enemy.DamageType.orangeMagic
+                );
+            }
+            case "electrified" -> {
+                return new Arc(
+                        p, start, turret,
+                        damage, maxLength, maxDistance, maxDistance,
+                        priority,
+                        25, 10, 5, 1, 1, 16,
+                        Color.YELLOW, Enemy.DamageType.nuclear
+                );
+            }
+            default -> {
+                System.err.println("Could not get arc of type: \"" + preset + "\"");
+                return null;
+            }
+        }
     }
 
     public void display() {
@@ -83,7 +170,8 @@ public class Arc {
     public void update(int j) {
         if (isPaused) return;
         if (alpha == 255) zap(blacklistedEnemy);
-        if (!isPaused) alpha -= up60ToFramerate(8);
+        if (buffer) buffer = false;
+        else alpha -= alphaDelta;
         if (alpha <= 0) arcs.remove(j);
     }
 
@@ -112,9 +200,9 @@ public class Arc {
                         bigPoints.get(i + 1).position,
                         particleChance, maxPoints,
                         turret != null && turret.boostedDamage() > 0);
-        } else {
+        } else { // no target
             float angle = p.random(TWO_PI);
-            float mag = p.random(maxDistance / 4f, maxDistance);
+            float mag = p.random(maxDistanceNoTarget / 4f, maxDistanceNoTarget);
             PVector position = PVector.fromAngle(angle);
             position = position.setMag(mag);
             position.add(startPosition);
@@ -122,7 +210,7 @@ public class Arc {
             for (int i = 0; i < bigPoints.size() - 1; i++)
                 bigPoints.get(i).getPoints(
                         bigPoints.get(i + 1).position,
-                        particleChance, maxPoints,
+                        particleChance, maxPointsNoTarget,
                         turret != null && turret.boostedDamage() > 0);
         }
     }
@@ -132,10 +220,6 @@ public class Arc {
     }
 
     protected Enemy getTargetEnemy(PVector position, Turret.Priority targeting, ArrayList<Enemy> enemiesRepeat) {
-        //-1: none
-        //0: close
-        //1: far
-        //2: strong
         if (targeting == Turret.Priority.None) return null;
         float dist;
         if (targeting == Turret.Priority.Close) dist = 1000000;

@@ -81,8 +81,27 @@ public class Nightmare extends Turret {
 
     @Override
     protected void fire(float barrelLength, String particleType) {
+        if (!alive) return;
         PVector pos = new PVector(tile.position.x-size.x/2,tile.position.y-size.y/2);
-        if (!isWindy) {
+        if (isWindy) {
+            for (Enemy enemy : enemies) {
+                if (PVector.sub(pos, enemy.position).mag() < getRange()) {
+                    enemy.damageVortex(0, "decay", effectLevel, effectDuration, this,
+                            Enemy.DamageType.decay, pos, pos, getRange(), -0.5f);
+                }
+            }
+            for (int j = 0; j < 3; j++) {
+                PVector partpos = PVector.add(pos, PVector.fromAngle(p.random(TWO_PI)).setMag(p.random(getRange())));
+                towerParticles.add(new Ouch(p, partpos.x, partpos.y, p.random(TWO_PI), "greyPuff"));
+            }
+            for (int i = 0; i < p.random(2, 5); i++) {
+                topParticles.add(new NightmareVortex(p, pos.copy(), getRange()));
+            }
+//            if (p.random(60) < 1) {
+//                arcs.add(new RedArc(p, pos.x, pos.y, this, 0, 1,
+//                        (int) p.random(getRange() / 10f, getRange()), Priority.None));
+//            }
+        } else {
             float angleDelta = PApplet.radians(10);
             playSoundRandomSpeed(p, fireSound, 1);
             for (int i = 0; i < numProjectiles; i++) {
@@ -92,27 +111,13 @@ public class Nightmare extends Turret {
                 pos.add(spa);
                 spawnProjectiles(pos, angle + num * angleDelta);
             }
-        } else {
-            for (Enemy enemy : enemies) {
-                if (PVector.sub(pos, enemy.position).mag() < range) {
-                    enemy.damageVortex(0, "decay", effectLevel, effectDuration, this,
-                            Enemy.DamageType.decay, pos, pos, range, -0.5f);
-                }
-            }
-            for (int j = 0; j < 3; j++) {
-                PVector partpos = PVector.add(pos, PVector.fromAngle(p.random(TWO_PI)).setMag(p.random(range)));
-                towerParticles.add(new Ouch(p, partpos.x, partpos.y, p.random(TWO_PI), "greyPuff"));
-            }
-            for (int i = 0; i < p.random(2, 5); i++) {
-                topParticles.add(new NightmareVortex(p, pos.copy(), range));
-            }
         }
     }
 
     @Override
     protected void spawnProjectiles(PVector position, float angle) {
         projectiles.add(new Needle(p, position.x, position.y, angle, this, getDamage(), (int) effectLevel,
-                effectDuration, range));
+                effectDuration, getRange()));
         for (int j = 0; j < 3; j++) {
             PVector spa2 = PVector.fromAngle(angle-HALF_PI+radians(p.random(-20,20)));
             spa2.setMag(-2);

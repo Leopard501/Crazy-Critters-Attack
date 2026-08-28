@@ -1,6 +1,6 @@
 package main.buffs;
 
-import main.projectiles.arcs.YellowArc;
+import main.projectiles.arcs.Arc;
 import main.enemies.Enemy;
 import main.towers.turrets.Turret;
 import processing.core.PApplet;
@@ -28,8 +28,12 @@ public class Electrified extends Buff {
 
     @Override
     public void effect() {
-        arcs.add(new YellowArc(p, target.position.x, target.position.y, turret, (int) effectLevel,
-                4, 150, Turret.Priority.values()[(int) p.random(3)]));
+        arcs.add(Arc.presets(
+                "electrified",
+                p, target.position.copy(), turret,
+                (int) effectLevel, 4, 150,
+                Turret.Priority.values()[(int) p.random(3)]
+        ));
         playSoundRandomSpeed(p, sound, 1);
     }
 }

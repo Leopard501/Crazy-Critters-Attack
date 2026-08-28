@@ -1,7 +1,6 @@
 package main.towers.turrets;
 
-import main.projectiles.arcs.OrangeArc;
-import main.projectiles.arcs.RedArc;
+import main.projectiles.arcs.Arc;
 import main.gui.inGame.Selection;
 import main.gui.guiObjects.PopupText;
 import main.misc.IntVector;
@@ -123,13 +122,14 @@ public class Booster extends Turret {
             }
         }
         if (p.random(30) < 1 && name.equals("boosterExplosive")) {
-            if (p.random(10) < 1) {
-                arcs.add(new RedArc(p, tile.position.x - (size.x / 2), tile.position.y - (size.y / 2),
-                  this, 0, 1, (int) p.random(20, 100), Priority.None));
-            } else {
-                arcs.add(new OrangeArc(p, tile.position.x - (size.x / 2), tile.position.y - (size.y / 2),
-                  this, 0, 1, (int) p.random(20, 100), Priority.None, 5));
-            }
+            String color = "boosterOrange";
+            if (p.random(10) < 1) color = "boosterRed";
+            arcs.add(Arc.presets(
+                    color,
+                    p, new PVector(tile.position.x - (size.x / 2), tile.position.y - (size.y / 2)), this,
+                    0, 1, (int) p.random(20, 100),
+                    Priority.None
+            ));
         }
     }
 

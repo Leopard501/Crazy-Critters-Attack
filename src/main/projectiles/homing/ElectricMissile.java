@@ -2,8 +2,8 @@ package main.projectiles.homing;
 
 import main.enemies.Enemy;
 import main.particles.ExplosionDebris;
-import main.projectiles.arcs.YellowArc;
 import main.particles.Ouch;
+import main.projectiles.arcs.Arc;
 import main.towers.turrets.Turret;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -30,7 +30,12 @@ public class ElectricMissile extends MagicMissile {
                     "nuclear", p.random(100, 200)));
         }
         topParticles.add(new Ouch(p,position.x,position.y,p.random(0,360),"yellowPuff"));
-        arcs.add(new YellowArc(p, position.x, position.y, turret, 0, 0, 75, Turret.Priority.None));
+        arcs.add(Arc.presets(
+                "electrified",
+                p, position.copy(), turret,
+                0, 1, 75,
+                Turret.Priority.None
+        ));
         projectiles.remove(this);
     }
 }

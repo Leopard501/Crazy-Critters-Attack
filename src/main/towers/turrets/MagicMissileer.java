@@ -1,6 +1,6 @@
 package main.towers.turrets;
 
-import main.projectiles.arcs.YellowArc;
+import main.projectiles.arcs.Arc;
 import main.projectiles.homing.ElectricMissile;
 import main.projectiles.homing.MagicMissile;
 import main.misc.Tile;
@@ -169,12 +169,12 @@ public class MagicMissileer extends Turret {
         spawnProjectiles(new PVector(0,0), angle);
         if (name.equals("magicMissleerElectric")) {
             for (int i = 0; i < 3; i++) {
-                arcs.add(new YellowArc(p,
-                        getCenter().x,
-                        getCenter().y,
-                        this, 0, 0,
-                        (int) p.random(20, 100),
-                        Priority.None));
+                arcs.add(Arc.presets(
+                        "electrified",
+                        p, getCenter().copy(), this,
+                        0, 1, (int) p.random(20, 100),
+                        Priority.None
+                ));
             }
         }
     }
@@ -253,7 +253,12 @@ public class MagicMissileer extends Turret {
                 };
 
                 if (p.random(25) < 1 && state == State.Idle)
-                    arcs.add(new YellowArc(p, getCenter().x, getCenter().y, this, 0, 0, (int) p.random(20, 100), Priority.None));
+                    arcs.add(Arc.presets(
+                            "electrified",
+                            p, getCenter().copy(), this,
+                            0, 1, (int) p.random(20, 100),
+                            Priority.None
+                    ));
             }
             if (specialAngle < TWO_PI) specialAngle += specialRotationSpeed;
             else specialAngle = 0;
