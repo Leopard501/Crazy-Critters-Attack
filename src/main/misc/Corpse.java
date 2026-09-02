@@ -37,6 +37,7 @@ public class Corpse {
     private int frame;
     private Enemy.DamageType type;
     private Color currentTintColor;
+    private PImage disintegratingSprite;
 
     /**
      * A dead enemy.
@@ -82,6 +83,14 @@ public class Corpse {
         float maxRotationSpeed = up60ToFramerate(200f / size.x) * 2;
         angularVelocity = p.random(radians(-maxRotationSpeed), radians(maxRotationSpeed));
 
+        if (type != null && type.equals(Enemy.DamageType.decay)) {
+            if (isAnimated) {
+                disintegratingSprite = sprites[sprites.length-1].copy();
+            } else {
+                disintegratingSprite = sprites[frame].copy();
+            }
+        }
+
         this.betweenFrames = betweenFrames;
         betweenTime = 0;
 
@@ -94,6 +103,9 @@ public class Corpse {
         move();
         bloodParticles();
         buffParticles();
+        if (type != null && type.equals(Enemy.DamageType.decay)) {
+            disintegratingSprite = disintegration(disintegratingSprite);
+        }
         lifespan--;
         if (lifespan <= 0) corpses.remove(i);
     }
@@ -107,7 +119,13 @@ public class Corpse {
     }
 
     public void display() {
-        PImage sprite = sprites[frame];
+        PImage sprite;
+        if (type != null && type.equals(Enemy.DamageType.decay) && (frame == sprites.length-1 || !isAnimated)) {
+            sprite = disintegratingSprite;
+        } else {
+            sprite = sprites[frame];
+        }
+
         if (!isPaused) {
             if (isAnimated && frame < sprites.length - 1) {
                 betweenTime++;
@@ -171,8 +189,23 @@ public class Corpse {
         float transparency = ((float) lifespan) / ((float) maxLife);
         if (tintColor != null) {
             p.tint(currentTintColor.getRGB());
-            superTint(st, new Color(tintColor.getRed(), tintColor.getGreen(), tintColor.getBlue(), 0), transparency);
+            superTint(st,
+                    new Color(tintColor.getRed(), tintColor.getGreen(), tintColor.getBlue(), 0),
+                    transparency);
         } else p.tint(currentTintColor.getRGB(), transparency * 255);
+        return st;
+    }
+
+    private PImage disintegration(PImage sprite) {
+        //for memory reasons
+        PImage st = p.createImage(sprite.width, sprite.height, ARGB);
+        sprite.loadPixels();
+        arrayCopy(sprite.pixels, st.pixels);
+
+        for (int i = 0; i < size.x / 20; i++) {
+            st.pixels[(int) p.random(st.pixels.length)] = 0;
+        }
+
         return st;
     }
 

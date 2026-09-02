@@ -157,7 +157,7 @@ public class Utilities {
             if (image.pixels[i] != 0) {
                 Color pixel = new Color(image.pixels[i]);
                 float m = abs(magnitude - 1);
-                pixel = new Color (
+                pixel = new Color(
                         calcColor(pixel.getRed(), m, tintColor.getRed()),
                         calcColor(pixel.getGreen(), m, tintColor.getGreen()),
                         calcColor(pixel.getBlue(), m, tintColor.getBlue()),
