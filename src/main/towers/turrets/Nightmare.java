@@ -189,12 +189,16 @@ public class Nightmare extends Turret {
                     effectLevel += 1000;
                 }
                 case 2 -> {
+                    name = "nightmareWindy";
                     effectLevel += 1000;
                     isWindy = true;
                     range -= 50;
                     if (numProjectiles > 5) range += 20;
                     extraInfo.remove(0);
+                    titleLines = new String[]{"Dark Gale"};
                     delay = 0;
+                    betweenIdleFrames = 2;
+                    loadSprites();
                 }
             }
         } if (id == 1) {

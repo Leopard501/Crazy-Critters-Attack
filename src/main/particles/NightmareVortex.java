@@ -18,7 +18,7 @@ public class NightmareVortex extends Particle {
     private final int lifespan;
     private final PVector center;
 
-    private int age = 0;
+    private int age;
 
     public NightmareVortex(PApplet p, PVector center, float end) {
         super(p, center.x, center.y, p.random(TWO_PI));
@@ -44,6 +44,8 @@ public class NightmareVortex extends Particle {
                 anim,
                 lifespan / anim.length,
                 false);
+
+        age = 12;
     }
 
     @Override
