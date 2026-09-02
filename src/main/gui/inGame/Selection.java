@@ -283,7 +283,11 @@ public class Selection {
             p.textAlign(CENTER);
             p.fill(new Color(20, 20, 50, 254).getRGB());
             p.textFont(monoMedium);
-            p.text("$" + nfc(turret.upgradePrices[nextLevel]), BOARD_WIDTH + 150, 690 + offset);
+            if (turret.upgradePrices[nextLevel] >= 100_000) {
+                p.text("$" + nfc(turret.upgradePrices[nextLevel] / 1000) + "k", BOARD_WIDTH + 150, 690 + offset);
+            } else {
+                p.text("$" + nfc(turret.upgradePrices[nextLevel]), BOARD_WIDTH + 150, 690 + offset);
+            }
         } else {
             fillColor = new Color(100, 100, 100, 254);
             p.fill(fillColor.getRGB());
