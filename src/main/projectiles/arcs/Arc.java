@@ -141,6 +141,24 @@ public class Arc {
                         Color.YELLOW, Enemy.DamageType.nuclear
                 );
             }
+            case "highPower" -> {
+                return new Arc(
+                        p, start, turret,
+                        damage, maxLength, maxDistance, maxDistance / 10,
+                        priority,
+                        15, 30, 3, 3, 30, 200,
+                        new Color(0xE12E0E), Enemy.DamageType.energy
+                );
+            }
+            case "nightmare" -> {
+                return new Arc(
+                        p, start, turret,
+                        damage, maxLength, maxDistance, maxDistance,
+                        priority,
+                        15, 8, 8, 2, 30, 8,
+                        new Color(0xAE1C00), Enemy.DamageType.energy
+                );
+            }
             default -> {
                 System.err.println("Could not get arc of type: \"" + preset + "\"");
                 return null;

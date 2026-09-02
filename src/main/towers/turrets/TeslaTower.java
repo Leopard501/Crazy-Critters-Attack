@@ -119,12 +119,11 @@ public class TeslaTower extends Turret {
         updateBoosts();
         if (highPower && !isPaused && !machine.dead) {
             PVector position = new PVector(tile.position.x - 25, tile.position.y - 25);
-            arcs.add(new Arc(
+            arcs.add(Arc.presets(
+                    "highPower",
                     p, position.copy(), this,
-                    getDamage(), arcLength, getRange(), getRange() / 10,
-                    priority,
-                    15, 30, 3, 3, 30, 200,
-                    new Color(0xE12E0E), Enemy.DamageType.energy
+                    getDamage(), arcLength, getRange(),
+                    priority
             ));
             FadeSoundLoop electricity = fadeSoundLoops.get("electricity");
             if (electricity.targetVolume < 0.2f) electricity.setTargetVolume(0.2f);

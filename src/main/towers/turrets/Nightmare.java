@@ -2,10 +2,10 @@ package main.towers.turrets;
 
 import main.enemies.Enemy;
 import main.particles.NightmareVortex;
-import main.particles.Ouch;
 import main.projectiles.Needle;
 import main.misc.Tile;
 import main.particles.MiscParticle;
+import main.projectiles.arcs.Arc;
 import processing.core.PApplet;
 import processing.core.PVector;
 
@@ -90,17 +90,16 @@ public class Nightmare extends Turret {
                             Enemy.DamageType.decay, pos, pos, getRange(), -0.5f);
                 }
             }
-            for (int j = 0; j < 3; j++) {
-                PVector partpos = PVector.add(pos, PVector.fromAngle(p.random(TWO_PI)).setMag(p.random(getRange())));
-                towerParticles.add(new Ouch(p, partpos.x, partpos.y, p.random(TWO_PI), "greyPuff"));
-            }
-            for (int i = 0; i < p.random(2, 5); i++) {
+            for (int i = 0; i < p.random(5, 10); i++) {
                 topParticles.add(new NightmareVortex(p, pos.copy(), getRange()));
             }
-//            if (p.random(60) < 1) {
-//                arcs.add(new RedArc(p, pos.x, pos.y, this, 0, 1,
-//                        (int) p.random(getRange() / 10f, getRange()), Priority.None));
-//            }
+            if (p.random(60) < 1) {
+                arcs.add(Arc.presets(
+                        "nightmare",
+                        p, pos.copy(), this,
+                        0, 5, (int) p.random(getRange() / 5f, getRange()),
+                        Priority.None));
+            }
         } else {
             float angleDelta = PApplet.radians(10);
             playSoundRandomSpeed(p, fireSound, 1);
