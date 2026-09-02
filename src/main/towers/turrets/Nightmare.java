@@ -192,6 +192,7 @@ public class Nightmare extends Turret {
                     effectLevel += 1000;
                     isWindy = true;
                     range -= 50;
+                    if (numProjectiles > 5) range += 40;
                     extraInfo.remove(0);
                     delay = 0;
                 }
@@ -199,7 +200,10 @@ public class Nightmare extends Turret {
         } if (id == 1) {
             switch (nextLevelB) {
                 case 3 -> range += 40;
-                case 4 -> numProjectiles += 3;
+                case 4 -> {
+                    numProjectiles += 3;
+                    if (isWindy) range += 40;
+                }
                 case 5 -> {
                     effectDuration += 5;
                     effectLevel += 1100;
