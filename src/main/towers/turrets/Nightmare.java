@@ -5,6 +5,7 @@ import main.particles.NightmareVortex;
 import main.projectiles.Needle;
 import main.misc.Tile;
 import main.particles.MiscParticle;
+import main.projectiles.NeedleRainbow;
 import main.projectiles.arcs.Arc;
 import processing.core.PApplet;
 import processing.core.PVector;
@@ -13,6 +14,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 import static main.Main.*;
+import static main.misc.Utilities.normalizeAngle;
 import static main.sound.SoundUtilities.playSoundRandomSpeed;
 
 public class Nightmare extends Turret {
@@ -116,15 +118,38 @@ public class Nightmare extends Turret {
     }
 
     @Override
+    protected void checkTarget() {
+        getTargetEnemy();
+        if (targetEnemy != null && state != State.Fire) aim(targetEnemy);
+        if (state == State.Idle &&
+                targetEnemy != null &&
+                (abs(normalizeAngle(targetAngle) - normalizeAngle(angle)) < 0.02 ||
+                        isLight)) {
+            //if done animating and aimed or light
+            state = State.Fire;
+            frame = 0;
+            fire(barrelLength, fireParticle);
+        }
+    }
+
+    @Override
     protected void spawnProjectiles(PVector position, float angle) {
-        projectiles.add(new Needle(p, position.x, position.y, angle, this, getDamage(), (int) effectLevel,
-                effectDuration, getRange()));
+        if (isLight) {
+            projectiles.add(new NeedleRainbow(p, position.x, position.y,
+                    angle + p.random(-PI / 8, PI / 8),
+                    this, getDamage(), getRange()));
+        } else {
+            projectiles.add(new Needle(p, position.x, position.y, angle, this, getDamage(),
+                    (int) effectLevel, effectDuration, getRange()));
+        }
         for (int j = 0; j < 3; j++) {
             PVector spa2 = PVector.fromAngle(angle-HALF_PI+radians(p.random(-20,20)));
             spa2.setMag(-2);
             PVector spp2 = new PVector(position.x,position.y);
             spp2.add(spa2);
-            towerParticles.add(new MiscParticle(p,spp2.x,spp2.y,angle+radians(p.random(-45,45)),"decay"));
+            towerParticles.add(new MiscParticle(p,spp2.x,spp2.y,
+                    angle+radians(p.random(-45,45)),
+                    "electricity"));
         }
     }
 
@@ -218,12 +243,14 @@ public class Nightmare extends Turret {
                     isLight = true;
                     damage = (int) effectLevel * 5;
                     if (delay < 3.5f) damage += 2000;
+                    range += 40;
                     numProjectiles = 1;
                     name = "nightmareLight";
                     extraInfo = new ArrayList<>();
                     titleLines = new String[]{"Prism Blaster"};
                     effect = null;
                     delay = 0;
+                    loadSprites();
                 }
             }
         }
