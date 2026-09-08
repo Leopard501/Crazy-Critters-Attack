@@ -105,11 +105,11 @@ public class Nightmare extends Turret {
         } else {
             float angleDelta = PApplet.radians(10);
             playSoundRandomSpeed(p, fireSound, 1);
+            PVector spa = PVector.fromAngle(angle-HALF_PI);
+            spa.setMag(20);
+            pos.add(spa);
             for (int i = 0; i < numProjectiles; i++) {
                 int num = ceil(i - numProjectiles / 2f);
-                PVector spa = PVector.fromAngle(angle-HALF_PI);
-                spa.setMag(20);
-                pos.add(spa);
                 spawnProjectiles(pos, angle + num * angleDelta);
             }
         }
