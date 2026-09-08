@@ -10,6 +10,7 @@ import processing.core.PApplet;
 import processing.core.PVector;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 import static main.Main.*;
 import static main.sound.SoundUtilities.playSoundRandomSpeed;
@@ -20,6 +21,7 @@ public class Nightmare extends Turret {
 
     private int numProjectiles;
     private boolean isWindy;
+    private boolean isLight;
 
     public static String pid = "T2-200-0-3.5";
     public static String description =
@@ -183,10 +185,14 @@ public class Nightmare extends Turret {
     protected void upgradeEffect(int id) {
         if (id == 0) {
             switch (nextLevelA) {
-                case 0 -> delay -= 1;
+                case 0 -> {
+                    delay -= 1;
+                    if (isLight) damage = (int) (damageTotal * 1.2f);
+                }
                 case 1 -> {
                     effectDuration += 3;
                     effectLevel += 1000;
+                    if (isLight) damage += 1000;
                 }
                 case 2 -> {
                     name = "nightmareWindy";
@@ -206,11 +212,19 @@ public class Nightmare extends Turret {
                 case 3 -> range += 40;
                 case 4 -> {
                     numProjectiles += 3;
-                    if (isWindy) range += 20;
+                    if (isWindy) range += 40;
                 }
                 case 5 -> {
-                    effectDuration += 5;
-                    effectLevel += 1100;
+                    isLight = true;
+                    damage = (int) effectLevel;
+                    if (delay < 3.5f) damage = (int) (damageTotal * 1.2f);
+                    numProjectiles = 1;
+                    name = "nightmareLight";
+                    extraInfo = new ArrayList<>();
+                    titleLines = new String[]{"Prism Blaster"};
+                    effectDuration = 0;
+                    effectLevel = 0;
+                    delay = 0;
                 }
             }
         }
