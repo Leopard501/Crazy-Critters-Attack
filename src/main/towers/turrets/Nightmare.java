@@ -187,12 +187,12 @@ public class Nightmare extends Turret {
             switch (nextLevelA) {
                 case 0 -> {
                     delay -= 1;
-                    if (isLight) damage = (int) (damageTotal * 1.2f);
+                    if (isLight) damage += 2000;
                 }
                 case 1 -> {
                     effectDuration += 3;
                     effectLevel += 1000;
-                    if (isLight) damage += 1000;
+                    if (isLight) damage += 5000;
                 }
                 case 2 -> {
                     name = "nightmareWindy";
@@ -216,14 +216,13 @@ public class Nightmare extends Turret {
                 }
                 case 5 -> {
                     isLight = true;
-                    damage = (int) effectLevel;
-                    if (delay < 3.5f) damage = (int) (damageTotal * 1.2f);
+                    damage = (int) effectLevel * 5;
+                    if (delay < 3.5f) damage += 2000;
                     numProjectiles = 1;
                     name = "nightmareLight";
                     extraInfo = new ArrayList<>();
                     titleLines = new String[]{"Prism Blaster"};
-                    effectDuration = 0;
-                    effectLevel = 0;
+                    effect = null;
                     delay = 0;
                 }
             }
