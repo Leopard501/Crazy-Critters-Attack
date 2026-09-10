@@ -50,6 +50,7 @@ public class Nightmare extends Turret {
         basePrice = price;
         priority = Priority.Unbuffed;
         effect = "decay";
+        betweenFireFrames = 2;
         titleLines = new String[]{"Nightmare", "Blaster"};
         placeSound = sounds.get("titaniumPlace");
         breakSound = sounds.get("titaniumBreak");
@@ -138,11 +139,6 @@ public class Nightmare extends Turret {
             projectiles.add(new NeedleRainbow(p, position.x, position.y,
                     angle + p.random(-PI / 8, PI / 8),
                     this, getDamage(), getRange()));
-        } else {
-            projectiles.add(new Needle(p, position.x, position.y, angle, this, getDamage(),
-                    (int) effectLevel, effectDuration, getRange()));
-        }
-        for (int j = 0; j < 3; j++) {
             PVector spa2 = PVector.fromAngle(angle-HALF_PI+radians(p.random(-20,20)));
             spa2.setMag(-2);
             PVector spp2 = new PVector(position.x,position.y);
@@ -150,7 +146,21 @@ public class Nightmare extends Turret {
             towerParticles.add(new MiscParticle(p,spp2.x,spp2.y,
                     angle+radians(p.random(-45,45)),
                     "electricity"));
+        } else {
+            projectiles.add(new Needle(p, position.x, position.y, angle, this, getDamage(),
+                    (int) effectLevel, effectDuration, getRange()));
+            playSoundRandomSpeed(p, fireSound, 1);
+            for (int j = 0; j < 3; j++) {
+                PVector spa2 = PVector.fromAngle(angle-HALF_PI+radians(p.random(-20,20)));
+                spa2.setMag(-2);
+                PVector spp2 = new PVector(position.x,position.y);
+                spp2.add(spa2);
+                towerParticles.add(new MiscParticle(p,spp2.x,spp2.y,
+                        angle+radians(p.random(-45,45)),
+                        "decay"));
+            }
         }
+
     }
 
     @Override
