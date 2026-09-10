@@ -191,8 +191,8 @@ public class KeyBinds {
         if (en1) enemies.add(Enemy.get(p, "smolBug", new PVector(boardMousePosition.x, boardMousePosition.y)));
         if (en2) enemies.add(Enemy.get(p, "midBug", new PVector(boardMousePosition.x, boardMousePosition.y)));
         if (en3) enemies.add(Enemy.get(p, "bigBug", new PVector(boardMousePosition.x, boardMousePosition.y)));
-        if (en4) enemies.add(Enemy.get(p, "smolBug", new PVector(boardMousePosition.x, boardMousePosition.y)));
-        if (en5) enemies.add(Enemy.get(p, "smolBug", new PVector(boardMousePosition.x, boardMousePosition.y)));
+        if (en4) enemies.add(Enemy.get(p, "scorpion", new PVector(boardMousePosition.x, boardMousePosition.y)));
+        if (en5) enemies.add(Enemy.get(p, "emperor", new PVector(boardMousePosition.x, boardMousePosition.y)));
         if (en6) enemies.add(Enemy.get(p, "smolBug", new PVector(boardMousePosition.x, boardMousePosition.y)));
         if (en7) enemies.add(Enemy.get(p, "smolBug", new PVector(boardMousePosition.x, boardMousePosition.y)));
         if (en8) enemies.add(Enemy.get(p, "smolBug", new PVector(boardMousePosition.x, boardMousePosition.y)));

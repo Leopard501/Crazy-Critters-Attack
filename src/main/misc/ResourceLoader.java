@@ -1,10 +1,7 @@
 package main.misc;
 
 import main.Main;
-import main.sound.FadeSoundLoop;
-import main.sound.MoveSoundLoop;
-import main.sound.SoundWithAlts;
-import main.sound.StartStopSoundLoop;
+import main.sound.*;
 import org.jetbrains.annotations.NotNull;
 import processing.core.PApplet;
 import processing.core.PImage;
@@ -234,6 +231,8 @@ public class ResourceLoader {
         moveSoundLoops.put("fae", new MoveSoundLoop(p, "fae", 10));
 
         soundsWithAlts.put("thunder", new SoundWithAlts(p, "thunder", 3));
+
+        stackableSounds.put("beam", new StackableSound(p, "beam", 3));
     }
 
     /**
